@@ -1,23 +1,61 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import Camera from "./Camera";
+import AWS from "aws-sdk";
+import "./App.css";
+
+AWS.config.update({
+  accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
+  region: "us-east-1",
+  signatureVersion: "v4",
+});
+
+function b64toBlob(dataURI) {
+    
+  var byteString = atob(dataURI.split(',')[1]);
+  var ab = new ArrayBuffer(byteString.length);
+  var ia = new Uint8Array(ab);
+  
+  for (var i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+  }
+  return new Blob([ab], { type: 'image/png' });
+}
 
 function App() {
+  const s3 = new AWS.S3();
+  // const [imageURL, setImageURL] = useState(null);
+
+  const uploadToS3 = async (base64Picture) => {
+    console.log("UPLOADING TO S3");
+
+    const blob = b64toBlob(base64Picture)
+
+    // Pegando a extensão da imagem
+    const fileType = base64Picture.split(";")[0].split("/")[1];
+
+    console.log(base64Picture);
+
+    const params = {
+      Bucket: process.env.REACT_APP_BUCKET_NAME,
+      Key: `${Date.now()}`, // File name
+      Body: blob, // Base64 data
+      // ContentEncoding: "base64",
+      // ContentType: "image/" + fileType,
+    };
+
+    try {
+      const { Location } = await s3.upload(params).promise(); // Location -> S3 file URL
+      console.log(Location);
+      return { url: Location };
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Camera uploadToS3={uploadToS3} />
     </div>
   );
 }
