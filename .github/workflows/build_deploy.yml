@@ -28,6 +28,10 @@ jobs:
 
       - name: Build project
         run: CI=false npm run build
+        env:
+          REACT_APP_BUCKET_NAME: ${{ secrets.REACT_APP_BUCKET_NAME }}
+          REACT_APP_AWS_ACCESS_KEY_ID: ${{ secrets.REACT_APP_AWS_ACCESS_KEY_ID }}
+          REACT_APP_AWS_SECRET_ACCESS_KEY: ${{ secrets.REACT_APP_AWS_SECRET_ACCESS_KEY }}
 
       #     - name: Run tests
       #       run: npm run test
