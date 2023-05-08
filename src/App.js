@@ -33,8 +33,6 @@ function App() {
     // Pegando a extensão da imagem
     // const fileType = base64Picture.split(";")[0].split("/")[1];
 
-    console.log(base64Picture);
-    console.log(process.env)
     const params = {
       Bucket: process.env.REACT_APP_BUCKET_NAME,
       Key: `${Date.now()}`, // File name
