@@ -102,7 +102,7 @@ function Camera(props) {
 
   const getMeasure = async () => {
     setLoading(true);
-    
+
     try {
       const response = await uploadToS3(picture);
       console.log(response);
@@ -120,6 +120,8 @@ function Camera(props) {
 
     setLoading(false);
     setOpenModal(false);
+    setPicture("");
+    setImgURL("");
   };
 
   const tryAgain = useCallback(() => {
