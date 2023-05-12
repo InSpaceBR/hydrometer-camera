@@ -35,7 +35,7 @@ function App() {
 
     const params = {
       Bucket: process.env.REACT_APP_BUCKET_NAME,
-      Key: `${Date.now()}`, // File name
+      Key: `${Date.now()}.png`, // File name
       Body: blob, // Base64 data
       // ContentEncoding: "base64",
       // ContentType: "image/" + fileType,
